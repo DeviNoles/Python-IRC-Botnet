@@ -9,9 +9,9 @@ def pong(): # respond to server Pings.
     ircsock.send("PONG :pingisn");
 
 def connect():
-    server = "75.90.61.240"; # Server
+    server = "x.x.x.x"; # Enter your Server IP
     channel = "#bot-testing"; # Channel
-    botnick = "B0t"; # Your bots nick
+    botnick = "B0t-Ubuntu"; # Your bots nick
     ircsock.connect((server, 6667)); # Here we connect to the server using the port 6667
 
     sendstr = "USER "+botnick+" "+botnick+" "+botnick+" :Python B0t1.!! Testing Case\r\n";
@@ -19,7 +19,7 @@ def connect():
 
     ircsock.sendall(("NICK "+ botnick +"\r\n").encode('utf-8')) # assign the nick to the bot
 
-    while 1:
+    while 1: #this while block is for ping-pong IRC responses (NOT IMPORTANT BUT READ THE IRC STANDARD TO UNDERSTAND THE PORT)
         ircmsg = ircsock.recv(2048).decode("utf-8")
         print (ircmsg);
         if ircmsg.find ( 'PING' ) != -1:
@@ -69,8 +69,17 @@ def joinchan(chan): # join channel(s).
             cmd = ircmsg.lower()[ircmsg.lower().find(":@ping")+7:len(str(ircmsg))];
             ircsock.sendall(("PRIVMSG " + chan + " :"+cmd+'\r'+'\n').encode('utf-8'))
             callPing(cmd)
+        if ircmsg.lower().find(":@name") != -1:
+            osVal = getOS("linux")
+            osVal = osVal.decode('utf-8')
+            ircsock.sendall(("PRIVMSG " + chan + " :"+osVal+'\r'+'\n').encode('utf-8'))
         if ircmsg.lower().find(":@exit") != -1:
             ircsock.shutdown(socket.SHUT_RDWR)
+
+def getOS(os):
+    if(os=="linux"):
+        command = ['cat','/proc/sys/kernel/hostname']
+        return subprocess.check_output(command)
 def callPing(host):
     param = '-n' if platform.system().lower()=='windows' else '-c'
     command = ['ping', param, '1', host]
